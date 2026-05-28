@@ -1,0 +1,29 @@
+# Agent Change Log
+
+## 2026-05-28 Europe/London
+
+### codex
+
+- Initialized the repository as a Git repository.
+- Reviewed `RAG_SYSTEM_DESIGN.md` and `PHASE1_MVP_PLAN.md`.
+- Added `.gitignore` to keep local agent config, environments, and secrets out of version control.
+- Added `AGENTS.md` to define the shared multi-agent workflow.
+- Created `AI_CONTEXT/` with project state, document analysis, decisions, task board, and handoff template.
+- Recorded the current project as planning-only, with Phase 1 as the implementation baseline.
+- Updated `RAG_SYSTEM_DESIGN.md` with explicit guidance for stable `chunk_id` / `chunk_order` metadata and safer `doc_id` strategy to avoid filename-stem collisions.
+- Expanded `.gitignore` to exclude Python virtual environments, installed-package directories, wheel/build artifacts, and common Python tool caches.
+
+### cowork (session 2)
+
+- Added WSL2/Ubuntu environment constraints to `CLAUDE.md`, `AGENTS.md`, `AI_CONTEXT/PROJECT_STATE.md`, and `PHASE1_MVP_PLAN.md`.
+- All shell commands now target bash/Ubuntu: Linux paths only, `apt-get` for system packages, `python3`/`pip3`, no PowerShell or Windows paths.
+- Step 1 of `PHASE1_MVP_PLAN.md` now opens with `sudo apt-get install -y poppler-utils` before the Python env setup.
+
+### cowork (session 1)
+
+- Reviewed `RAG_SYSTEM_DESIGN.md` and produced full architecture review (6 critical/significant findings).
+- Updated `RAG_SYSTEM_DESIGN.md`: fixed `chunk_size` characters-vs-tokens bug; added dedicated embedding service section (sentence-transformers cannot run on Vercel Serverless); added auth/RLS section (§5); added document update/delete strategy (§6) with `doc_registry` table and SHA-256 staleness check; added OpenRouter rate limit constraints and context window budget; expanded Potential Improvements with query rewriting/HyDE, semantic caching, and HNSW parameter tuning.
+- Created `PHASE1_MVP_PLAN.md`: full Phase 1 MVP implementation plan — Python env, Supabase fresh setup (4 SQL blocks), complete module code for `config.py`, `db/client.py`, `ingestion/` (loader, chunker, embedder, pipeline), `retrieval/` (search, prompt), `routers/` (ingest, query, documents), `main.py`, local dev workflow, and 9-step end-to-end test script with acceptance criteria.
+- Reconciled `PHASE1_MVP_PLAN.md` with codex's additions: updated `ingest_pdf()` to accept optional explicit `doc_id` param and populate `chunk_id`/`chunk_order` in metadata; updated `Source` response model to use stable `chunk_id`/`chunk_order`/`doc_id` fields instead of retrieval rank; updated prompt builder to cite `chunk_id` not `i+1`; updated ingest router to expose `doc_id` as an optional form field.
+- Updated `AI_CONTEXT/TASK_BOARD.md`: recorded T-008, T-009, T-010 as done; added resolution notes to T-003, T-004, T-005.
+- Updated `AI_CONTEXT/DECISIONS.md`: added D-005 (citation identity); partially resolved O-001 (doc_id strategy for MVP); resolved O-002 (unstructured[pdf] behind narrow interface); resolved O-003 (inline SQL for MVP, migrate to files when a second environment is needed).
