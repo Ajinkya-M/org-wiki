@@ -2,6 +2,22 @@
 
 ## 2026-05-28 Europe/London
 
+### codex (session 4 — docs sync)
+
+- Updated `PROJECT_STATE.md` to reflect the working local prototype (JSON vector store, org-scoped dirs, PyMuPDF, character-budget chunking).
+- Added decisions D-006 through D-010 to `DECISIONS.md` covering: JSON vector store, PyMuPDF, character-budget chunking, org scoping, and no-LLM retrieval.
+- Updated `RAG_SYSTEM_DESIGN.md` overview to mention the parallel local prototype track and link to playground scripts.
+- Updated `PHASE1_MVP_PLAN.md` status banner noting that the plan is unimplemented; the local prototype is the current state.
+- No code changes.
+
+### codex (session 3)
+
+- Created `playground/index_docs.py` — scans PDFs, extracts text via PyMuPDF, chunks (~992 chars), embeds with `all-MiniLM-L6-v2`, saves one `.json` per PDF to `playground/embeddings/`.
+- Created `playground/ask.py` — loads all `.json` embedding files, encodes the user's question, returns top-K chunks ranked by cosine similarity (no LLM, no DB).
+- Tested both: Driver Handbook indexed to 104 chunks/384-dim; queried "what is the driver helpline number?" — returned `0344 371 2455` at score 0.37.
+- Recorded as T-012 in task board.
+- Refactored both scripts to be org-scoped: `--org <name>` isolates embeddings under `playground/embeddings/<org>/`. Querying only searches that org's directory.
+
 ### codex
 
 - Initialized the repository as a Git repository.

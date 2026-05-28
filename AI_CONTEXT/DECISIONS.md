@@ -2,6 +2,42 @@
 
 Last updated: 2026-05-28 Europe/London
 
+## Implementation Paths
+
+The project now has two parallel tracks. This section records the decisions taken for each.
+
+### D-006: JSON-based vector store for local prototype
+
+- Status: accepted (prototype only)
+- Rationale: zero infrastructure, instant setup, portable. Embeddings JSON files are loaded into memory and searched via numpy cosine similarity.
+- Limitation: does not scale beyond what fits in RAM. For hundreds of documents with thousands of chunks, this will become slow. The Supabase pgvector path (Phase 1) is still the target for production.
+- Consequence: the prototype is purely local. No Supabase, no API server, no network calls.
+
+### D-007: PyMuPDF instead of unstructured[pdf] for prototype
+
+- Status: accepted
+- Rationale: PyMuPDF has zero native dependencies — no `poppler-utils`, no `libreoffice`, no Java. Works instantly after `pip install`. Text extraction quality is sufficient for the handbook PDF tested.
+- Trigger to revisit: if scanned PDFs (image-only) need to be processed, `unstructured[pdf]` or OCR would be required.
+
+### D-008: Character-budget chunking instead of tokenizer-based
+
+- Status: accepted
+- Rationale: calling `AutoTokenizer.encode()` on every paragraph adds meaningful overhead. Character-budget (~992 chars ≈ 256 tokens for English) is a simple approximation that stays safely within the model's 256-token max sequence length without any tokenizer calls.
+- Risk: short sentences + non-English text may have different chars/token ratios. If retrieval quality degrades, switch to tokenizer-based splitting.
+- Consequence: the chunker does not import `transformers` or `langchain` — fewer dependencies, faster startup.
+
+### D-009: Org-scoped subdirectories for embeddings
+
+- Status: accepted
+- Rationale: `playground/embeddings/<org>/` keeps each organisation's data fully isolated. The `--org` flag on both `index_docs.py` and `ask.py` enforces this at the CLI level. No cross-contamination between orgs.
+- Consequence: queries must specify `--org`; there is no cross-org search. This matches the production requirement (department scoping in RAG_SYSTEM_DESIGN.md §5).
+
+### D-010: No LLM in the prototype retrieval step
+
+- Status: accepted
+- Rationale: the prototype returns raw chunks ranked by similarity. The user reads them directly. This is intentional — it validates retrieval quality before adding LLM hallucination risk.
+- Next step: an LLM glue script can be added to consume the top-K chunks and produce a natural-language answer.
+
 ## Active Decisions
 
 ### D-001: Phase 1 plan is the execution baseline

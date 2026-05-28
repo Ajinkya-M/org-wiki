@@ -1,6 +1,8 @@
 # Phase 1 MVP — Backend Pipeline Plan
 ## Org Wiki RAG System
 
+> ⏩ **Status:** This plan has **not been implemented yet**. A local prototype exists at `playground/index_docs.py` + `playground/ask.py` (JSON-based vector store, no Supabase). See `AI_CONTEXT/PROJECT_STATE.md` and `AI_CONTEXT/DECISIONS.md` for the current state. This document remains the target architecture for Phase 1.
+
 **Goal:** A locally-runnable Python + FastAPI backend that accepts one or more PDF files, chunks and embeds them into Supabase pgvector, and exposes a query endpoint that retrieves relevant information with clearly cited sources.
 
 **Stack:** Python 3.11+, FastAPI, sentence-transformers, Supabase (pgvector), OpenRouter (free LLM)
