@@ -24,6 +24,7 @@ Last updated: 2026-05-28 Europe/London
 | T-009 | done | cowork | Write Phase 1 MVP plan | `PHASE1_MVP_PLAN.md` | Full implementation plan with modules, SQL schema, API routers, and end-to-end test steps. Completed 2026-05-28 Europe/London |
 | T-010 | done | cowork | Reconcile PHASE1_MVP_PLAN.md with codex's chunk_id / doc_id additions | `PHASE1_MVP_PLAN.md` | Updated pipeline.py (chunk_id, chunk_order), Source model (stable fields), prompt builder, ingest router (optional doc_id param), test examples. Completed 2026-05-28 Europe/London |
 | T-011 | done | codex | Expand `.gitignore` for Python packages, environments, and build artifacts | `.gitignore` | Completed on 2026-05-28 Europe/London |
+| T-012 | done | codex | Remove company-specific playground sample artifacts from version control | `.gitignore`, `playground/*`, `AI_CONTEXT/*` | Completed on 2026-05-28 Europe/London |
 | T-012 | done | codex | Build local-only indexing & query scripts in playground/ | `playground/index_docs.py`, `playground/ask.py`, `playground/embeddings/` | Embeddings JSON as local vector store — no DB needed |
 | T-013 | done | codex | Sync docs to reflect working prototype | `PROJECT_STATE.md`, `DECISIONS.md`, `RAG_SYSTEM_DESIGN.md`, `PHASE1_MVP_PLAN.md` | All context files updated to show current state |
 

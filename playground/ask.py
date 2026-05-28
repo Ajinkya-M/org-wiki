@@ -3,9 +3,9 @@ Usage:
     python3 playground/ask.py "your question here" --org <name> [-n top-k] [-t threshold]
 
 Examples:
-    python3 playground/ask.py "what is the driver helpline number?" --org barclays -n 5
-    python3 playground/ask.py "how do I submit expenses?" --org barclays -t 0.3
-    python3 playground/ask.py "where is the office located?" --org barclays -n 10 -t 0.25
+    python3 playground/ask.py "what is the support helpline number?" --org example_org -n 5
+    python3 playground/ask.py "how do I submit expenses?" --org example_org -t 0.3
+    python3 playground/ask.py "where is the office located?" --org example_org -n 10 -t 0.25
 
 Looks up all .json embedding files in playground/embeddings/<org>/ and returns
 the most relevant chunks ranked by cosine similarity.

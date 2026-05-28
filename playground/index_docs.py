@@ -4,13 +4,13 @@ Usage:
 
 Examples:
     # Index a single PDF for an organisation:
-    python3 playground/index_docs.py handbook.pdf --org barclays
+    python3 playground/index_docs.py handbook.pdf --org example_org
 
     # Index all PDFs in a directory for an organisation:
-    python3 playground/index_docs.py docs/ --org barclays
+    python3 playground/index_docs.py docs/ --org example_org
 
     # Index multiple files/directories:
-    python3 playground/index_docs.py handbook.pdf policy.pdf docs/ --org barclays
+    python3 playground/index_docs.py handbook.pdf policy.pdf docs/ --org example_org
 
 Output: saves one .json file per PDF into playground/embeddings/<org>/
 

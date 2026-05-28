@@ -32,7 +32,7 @@ The system has a **working local prototype** (session 3 codex). Phase 1 (Supabas
 - `playground/index_docs.py` — scans PDFs, extracts text with PyMuPDF, chunks (~992 chars), embeds with `all-MiniLM-L6-v2`, saves one `.json` per PDF to `playground/embeddings/<org>/`.
 - `playground/ask.py` — loads all `.json` embedding files for a given `--org`, encodes the user's question, returns top-K chunks ranked by cosine similarity.
 - **Org-scoped storage:** embeddings sit under `playground/embeddings/<org>/` — each org directory is isolated.
-- **Verified:** Driver Handbook indexed (104 chunks, 384-dim), query for helpline returned `0344 371 2455`.
+- Playground verification was previously done with a local sample PDF, but sample source documents and generated embeddings should not be committed to the repository.
 
 ### What's Next
 
@@ -115,4 +115,3 @@ No `poppler-utils`, `unstructured`, `langchain`, `supabase`, or `httpx` needed f
 - Agents should claim work before editing and log results afterward.
 - Any deviation from the documented architecture must be recorded in `DECISIONS.md`.
 - The playground prototype is a **parallel track** — it does not replace Phase 1, but it validates the core RAG concept locally.
-

@@ -14,7 +14,7 @@
 
 - Created `playground/index_docs.py` — scans PDFs, extracts text via PyMuPDF, chunks (~992 chars), embeds with `all-MiniLM-L6-v2`, saves one `.json` per PDF to `playground/embeddings/`.
 - Created `playground/ask.py` — loads all `.json` embedding files, encodes the user's question, returns top-K chunks ranked by cosine similarity (no LLM, no DB).
-- Tested both: Driver Handbook indexed to 104 chunks/384-dim; queried "what is the driver helpline number?" — returned `0344 371 2455` at score 0.37.
+- Tested the playground flow against a local sample PDF to verify indexing and retrieval behavior.
 - Recorded as T-012 in task board.
 - Refactored both scripts to be org-scoped: `--org <name>` isolates embeddings under `playground/embeddings/<org>/`. Querying only searches that org's directory.
 
@@ -28,6 +28,7 @@
 - Recorded the current project as planning-only, with Phase 1 as the implementation baseline.
 - Updated `RAG_SYSTEM_DESIGN.md` with explicit guidance for stable `chunk_id` / `chunk_order` metadata and safer `doc_id` strategy to avoid filename-stem collisions.
 - Expanded `.gitignore` to exclude Python virtual environments, installed-package directories, wheel/build artifacts, and common Python tool caches.
+- Renamed playground example organisation references to `example_org` and stopped tracking local sample PDFs and generated embedding artifacts.
 
 ### cowork (session 2)
 
