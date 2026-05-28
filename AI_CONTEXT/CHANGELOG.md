@@ -2,6 +2,16 @@
 
 ## 2026-05-28 Europe/London
 
+### me
+
+- Created `migrations/001_initial_schema.sql` with all 4 SQL blocks from `PHASE1_MVP_PLAN.md` Step 2c (pgvector, knowledge_chunks, doc_registry, match_knowledge_chunks function).
+- Applied schema to Supabase project via SQL Editor — success.
+- Created `playground/test_supabase.py` — validates Supabase connection, table existence, and `match_knowledge_chunks()` RPC function. All 4 checks pass.
+- Installed `python-dotenv` and `supabase` Python packages.
+- Updated T-003 to done in task board.
+
+## 2026-05-28 Europe/London
+
 ### codex (session 4 — docs sync)
 
 - Updated `PROJECT_STATE.md` to reflect the working local prototype (JSON vector store, org-scoped dirs, PyMuPDF, character-budget chunking).

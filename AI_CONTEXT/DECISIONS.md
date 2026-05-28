@@ -87,7 +87,7 @@ The project now has two parallel tracks. This section records the decisions take
 
 ### O-003: Migration layout
 
-- Status: resolved for MVP
-- Decision: inline SQL blocks in `PHASE1_MVP_PLAN.md` run manually via the Supabase SQL Editor. No `migrations/` directory for Phase 1.
-- Trigger to revisit: when a second environment (staging, CI, another developer's machine) needs reproducible schema setup. At that point, extract SQL into numbered files under `migrations/` and optionally wire up the Supabase CLI.
+- Status: resolved
+- Decision: `migrations/001_initial_schema.sql` created with all 4 SQL blocks from `PHASE1_MVP_PLAN.md`. Schema applied to Supabase project `org-wiki` via SQL Editor. Connection verified via both Python client and Supabase MCP.
+- The original decision noted `migrations/` as a "trigger to revisit" item for multi-environment setups; the file was created proactively for reproducibility.
 

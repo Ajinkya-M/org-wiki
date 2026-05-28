@@ -6,7 +6,7 @@ Last updated: 2026-05-28 Europe/London
 
 - Git repository initialized on 2026-05-28.
 - Existing hidden local config directory `.claude/` is workstation-specific and ignored via `.gitignore`.
-- **Planning documents + working prototype in `playground/`.** No Phase 1 backend scaffolded yet.
+- **Planning documents + working prototype in `playground/`.** Phase 1 infra scaffolded: Supabase schema applied, migration file created, connection verified.
 
 ## Project Goal
 
@@ -21,11 +21,11 @@ Two implementation tracks exist:
 | Track | Description | Status |
 |---|---|---|
 | **Local (prototype)** | JSON-based vector store, org-scoped directories, standalone Python scripts | 🟢 Working |
-| **Phase 1 (target)** | FastAPI + Supabase pgvector + OpenRouter (per `PHASE1_MVP_PLAN.md`) | 🔴 Not started |
+| **Phase 1 (target)** | FastAPI + Supabase pgvector + OpenRouter (per `PHASE1_MVP_PLAN.md`) | 🟡 Infra ready (schema applied, connection verified) |
 
 ## Current Phase
 
-The system has a **working local prototype** (session 3 codex). Phase 1 (Supabase-backed) remains planned but unimplemented.
+The system has a **working local prototype** (session 3 codex). Phase 1 (Supabase-backed) has its schema applied and connection verified — backend module code remains unimplemented.
 
 ### What Exists
 
@@ -33,11 +33,14 @@ The system has a **working local prototype** (session 3 codex). Phase 1 (Supabas
 - `playground/ask.py` — loads all `.json` embedding files for a given `--org`, encodes the user's question, returns top-K chunks ranked by cosine similarity.
 - **Org-scoped storage:** embeddings sit under `playground/embeddings/<org>/` — each org directory is isolated.
 - Playground verification was previously done with a local sample PDF, but sample source documents and generated embeddings should not be committed to the repository.
+- `migrations/001_initial_schema.sql` — Supabase schema: `knowledge_chunks` table (pgvector), `doc_registry` table, `match_knowledge_chunks()` RPC function.
+- `playground/test_supabase.py` — connection and schema verification script (all checks passing).
+- Supabase project `org-wiki` (`ppypejlpkyiyifctwglc`) provisioned, schema applied, connection confirmed via both Python client and Supabase MCP.
 
 ### What's Next
 
 - Glue the retrieval output (`ask.py` top-K chunks) to a local or free LLM to generate natural-language answers (classic RAG).
-- Then decide whether to proceed to Phase 1 (Supabase pgvector + FastAPI).
+- Implement Phase 1 backend modules: `db/client.py`, `config.py`, ingestion pipeline, retrieval + prompt, API routers.
 
 ## Scope Boundaries
 
@@ -54,7 +57,7 @@ The system has a **working local prototype** (session 3 codex). Phase 1 (Supabas
 - local runtime only
 - backend-only implementation
 - ingestion, retrieval, answer generation
-- Supabase schema and retrieval function
+- Supabase schema and retrieval function ✅ (schema applied, verified)
 
 ### Excluded (both tracks)
 
@@ -89,8 +92,11 @@ The system has a **working local prototype** (session 3 codex). Phase 1 (Supabas
 | `sentence-transformers` | Both scripts | Embedding model `all-MiniLM-L6-v2` (384-dim) |
 | `numpy` | `ask.py` | Cosine similarity computation |
 | `scikit-learn` | (imported but unused) | Pre-installed, not called |
+| `supabase` | `test_supabase.py` | Supabase Python client |
+| `python-dotenv` | `test_supabase.py` | Load `.env` from project root |
+| `httpx` | (Phase 1) | Installed, used by OpenRouter calls |
 
-No `poppler-utils`, `unstructured`, `langchain`, `supabase`, or `httpx` needed for the local prototype.
+No `poppler-utils`, `unstructured`, or `langchain` needed for the local prototype.
 
 ## Constraints
 
