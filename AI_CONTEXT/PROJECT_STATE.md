@@ -29,17 +29,23 @@ The system has a **working local prototype** (session 3 codex). Phase 1 (Supabas
 
 ### What Exists
 
-- `playground/index_docs.py` — scans PDFs, extracts text with PyMuPDF, chunks (~992 chars), embeds with `all-MiniLM-L6-v2`, saves one `.json` per PDF to `playground/embeddings/<org>/`.
+- `playground/index_docs.py` — scans PDFs, extracts text with PyMuPDF, chunks (~992 chars), embeds with `all-MiniLM-L6-v2`. Now supports three storage modes via `--store`:
+  - `local` (default): saves `.json` per PDF to `playground/embeddings/<org>/`
+  - `supabase`: inserts into `knowledge_chunks` + upserts `doc_registry`
+  - `both`: writes to both simultaneously
+  - Stable identity: `doc_id = {org}/{pdf_stem}`, `chunk_id = {doc_id}:c{chunk_order:04d}`
+  - Idempotent: SHA-256 hash + `doc_registry` check skips unchanged files; changed files replace old chunks
 - `playground/ask.py` — loads all `.json` embedding files for a given `--org`, encodes the user's question, returns top-K chunks ranked by cosine similarity.
 - **Org-scoped storage:** embeddings sit under `playground/embeddings/<org>/` — each org directory is isolated.
 - Playground verification was previously done with a local sample PDF, but sample source documents and generated embeddings should not be committed to the repository.
 - `migrations/001_initial_schema.sql` — Supabase schema: `knowledge_chunks` table (pgvector), `doc_registry` table, `match_knowledge_chunks()` RPC function.
-- `playground/test_supabase.py` — connection and schema verification script (all checks passing).
+- `playground/test_supabase.py` — connection, schema, and data verification. Supports `--doc-id` and `--query` flags for targeted checks.
 - Supabase project `org-wiki` (`ppypejlpkyiyifctwglc`) provisioned, schema applied, connection confirmed via both Python client and Supabase MCP.
 
 ### What's Next
 
-- Glue the retrieval output (`ask.py` top-K chunks) to a local or free LLM to generate natural-language answers (classic RAG).
+- Teach `playground/ask.py` to query Supabase via `match_knowledge_chunks()` for DB-backed retrieval.
+- Glue the retrieval output to a local or free LLM to generate natural-language answers (classic RAG).
 - Implement Phase 1 backend modules: `db/client.py`, `config.py`, ingestion pipeline, retrieval + prompt, API routers.
 
 ## Scope Boundaries
@@ -70,7 +76,8 @@ The system has a **working local prototype** (session 3 codex). Phase 1 (Supabas
 ## Immediate Priorities
 
 1. *(optional)* Build LLM glue script to complete the RAG loop in playground.
-2. Proceed to Phase 1 (FastAPI + Supabase) if infra requirements are needed.
+2. Add Supabase pgvector storage to the playground indexing flow.
+3. Proceed to Phase 1 (FastAPI + Supabase) if infra requirements are needed.
 
 ## Development Environment
 

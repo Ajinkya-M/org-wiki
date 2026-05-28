@@ -70,6 +70,19 @@ The project now has two parallel tracks. This section records the decisions take
 - Reason: retrieval rank changes query to query and is therefore not a durable citation handle. `chunk_id` (format: `{doc_id}:p{page}:c{chunk_order}`) is assigned at ingest time and is stable.
 - Consequence: `Source` response model and prompt builder must reference `chunk_id` and `chunk_order` from stored metadata. Retrieval rank (`i+1`) must not appear in any user-facing citation.
 
+### D-011: Playground Supabase integration via --store flag
+
+- Status: accepted
+- Rationale: adding `--store local|supabase|both` to the existing `index_docs.py` preserves the working local prototype while allowing opt-in DB storage. This de-risks the Phase 1 migration path by validating the insert/upsert/idempotency logic in the familiar playground environment first.
+- Consequence: the playground script now has two storage paths sharing the same extraction, chunking, and embedding code. Keeping them in one file avoids drift between parallel implementations.
+- Tradeoff: the script is now more complex (conditional DB logic), but the CLI flag keeps the default path (`--store local`) identical to the previous behavior.
+
+### D-012: doc_id namespacing format
+
+- Status: accepted
+- Rationale: `{org_name}/{pdf_stem_slug}` prevents cross-org collisions while staying simple. This is a playground-level improvement over the bare filename stem that `index_docs.py` previously used for the JSON output filename. The Supabase `doc_id` column is `TEXT` so the format has no DB constraints.
+- Consequence: the local JSON file name is still just `{pdf_stem}.json` (unchanged). The namespaced `doc_id` only affects the DB path.
+
 ## Open Decisions
 
 ### O-001: Stable document identity strategy

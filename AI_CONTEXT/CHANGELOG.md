@@ -2,6 +2,22 @@
 
 ## 2026-05-28 Europe/London
 
+### me (session 2 — playground Supabase integration)
+
+- Refactored `playground/index_docs.py` into cleaner helper functions (extract_text, chunk_text, get_source_hash, make_doc_id, make_chunk_id, collect_pdfs).
+- Added `--store local|supabase|both` CLI flag (default: local). Preserves existing JSON behavior.
+- Added `.env` loading and Supabase client init using same pattern as `test_supabase.py`.
+- Added SHA-256 file hashing idempotency: `doc_registry` check skips unchanged files, replaces old chunks for changed files.
+- Stable identity: `doc_id = {org}/{pdf_stem}`, `chunk_id = {doc_id}:c{chunk_order:04d}`.
+- Insert into `knowledge_chunks` with `content`, `embedding`, `metadata` (doc_id, source, organisation, chunk_id, chunk_order, source_hash).
+- Upsert `doc_registry` with doc_id, source_hash, file_name, chunk_count.
+- Improved CLI output per document (file name, doc_id, chunk count, embedding dim, store mode, status).
+- Fixed `maybe_single()` guard — returns `None` directly when no match (not a chainable query builder).
+- Extended `playground/test_supabase.py` with `--doc-id` and `--query` flags for targeted data verification.
+- Validation: local ✅, supabase ✅, both ✅, re-run skip ✅, Supabase MCP table verification ✅.
+
+## 2026-05-28 Europe/London
+
 ### me
 
 - Created `migrations/001_initial_schema.sql` with all 4 SQL blocks from `PHASE1_MVP_PLAN.md` Step 2c (pgvector, knowledge_chunks, doc_registry, match_knowledge_chunks function).
@@ -39,6 +55,7 @@
 - Updated `RAG_SYSTEM_DESIGN.md` with explicit guidance for stable `chunk_id` / `chunk_order` metadata and safer `doc_id` strategy to avoid filename-stem collisions.
 - Expanded `.gitignore` to exclude Python virtual environments, installed-package directories, wheel/build artifacts, and common Python tool caches.
 - Renamed playground example organisation references to `example_org` and stopped tracking local sample PDFs and generated embedding artifacts.
+- Added `SUPABASE_PGVECTOR_PLAYGROUND_PLAN.md` with a step-by-step plan to evolve the playground indexer from local JSON output to optional Supabase pgvector storage.
 
 ### cowork (session 2)
 
