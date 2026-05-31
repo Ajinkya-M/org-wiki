@@ -1,5 +1,14 @@
 # Agent Change Log
 
+## 2026-06-01 Europe/London
+
+### codex
+
+- Redacted the concrete Supabase project ID string from tracked documentation.
+- Updated `AI_CONTEXT/PROJECT_STATE.md` to remove the explicit project ID from the Supabase project reference.
+- Ran a repo-wide search for the same string and confirmed remaining occurrence is only in `.env`, which was intentionally excluded.
+- Added completed task entry T-019 in `AI_CONTEXT/TASK_BOARD.md` for this redaction work.
+
 ## 2026-05-31 Europe/London
 
 ### codex

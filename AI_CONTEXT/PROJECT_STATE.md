@@ -43,7 +43,7 @@ The system has a **working local + Supabase-backed playground prototype**. Core 
 - `playground/openrouter_client.py` — shared OpenRouter helper (env loading, API key lookup, free model selection, chat completion call, optional raw payload path).
 - `playground/test_openrouter.py` — checks OpenRouter connectivity and runs a simple free-model completion smoke test.
 - `playground/api.py` — FastAPI playground service with `GET /health`, `POST /ingest` (PDF upload -> Supabase indexing), and `POST /query` (pgvector retrieval -> OpenRouter answer + cited sources).
-- Supabase project `org-wiki` (`ppypejlpkyiyifctwglc`) provisioned, schema applied, connection confirmed via both Python client and Supabase MCP.
+- Supabase project `org-wiki` provisioned, schema applied, connection confirmed via both Python client and Supabase MCP.
 
 ### What's Next
 
