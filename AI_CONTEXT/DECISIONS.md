@@ -1,6 +1,6 @@
 # Decisions
 
-Last updated: 2026-05-28 Europe/London
+Last updated: 2026-05-31 Europe/London
 
 ## Implementation Paths
 
@@ -11,7 +11,7 @@ The project now has two parallel tracks. This section records the decisions take
 - Status: accepted (prototype only)
 - Rationale: zero infrastructure, instant setup, portable. Embeddings JSON files are loaded into memory and searched via numpy cosine similarity.
 - Limitation: does not scale beyond what fits in RAM. For hundreds of documents with thousands of chunks, this will become slow. The Supabase pgvector path (Phase 1) is still the target for production.
-- Consequence: the prototype is purely local. No Supabase, no API server, no network calls.
+- Consequence: local JSON retrieval remains supported as the baseline path for quick offline iteration.
 
 ### D-007: PyMuPDF instead of unstructured[pdf] for prototype
 
@@ -34,9 +34,21 @@ The project now has two parallel tracks. This section records the decisions take
 
 ### D-010: No LLM in the prototype retrieval step
 
-- Status: accepted
+- Status: superseded by D-013
 - Rationale: the prototype returns raw chunks ranked by similarity. The user reads them directly. This is intentional — it validates retrieval quality before adding LLM hallucination risk.
 - Next step: an LLM glue script can be added to consume the top-K chunks and produce a natural-language answer.
+
+### D-013: LLM-backed answering enabled in playground
+
+- Status: accepted
+- Rationale: retrieval quality has been validated enough to add a grounded answer step using OpenRouter free models. This unlocks an end-to-end RAG loop while preserving the ability to inspect raw chunks.
+- Consequence: `playground/ask.py` supports `--llm`; when key/model/network issues occur, the script falls back to raw chunk output.
+
+### D-014: Playground FastAPI vertical slice added before Phase 1 module split
+
+- Status: accepted
+- Rationale: adding `playground/api.py` (`/health`, `/ingest`, `/query`) provides a practical integration surface for testing ingestion + retrieval + answer generation without waiting for full Phase 1 scaffolding.
+- Consequence: API capability exists, but code is still playground-oriented and not yet aligned to the planned modular backend package structure.
 
 ## Active Decisions
 
@@ -92,6 +104,13 @@ The project now has two parallel tracks. This section records the decisions take
 - Remaining risk: bare filename stem will collide if files from different folders share a name. Acceptable for local MVP; must be resolved before multi-folder or multi-source ingestion.
 - Long-term preference: source-system ID or namespaced slug `{department}/{folder}/{filename-stem}`.
 
+### O-004: Single retrieval backend in playground query flow
+
+- Status: open
+- Current behavior: `playground/ask.py` retrieves from local JSON embeddings only; Supabase retrieval is available via `playground/api.py` query path.
+- Risk: behavior differs across interfaces (CLI vs API), which may confuse validation and acceptance testing.
+- Preferred direction: add an explicit retrieval backend switch in `ask.py` (for example local/supabase) and document expected parity.
+
 ### O-002: PDF parsing backend for MVP
 
 - Status: resolved for MVP
@@ -103,4 +122,3 @@ The project now has two parallel tracks. This section records the decisions take
 - Status: resolved
 - Decision: `migrations/001_initial_schema.sql` created with all 4 SQL blocks from `PHASE1_MVP_PLAN.md`. Schema applied to Supabase project `org-wiki` via SQL Editor. Connection verified via both Python client and Supabase MCP.
 - The original decision noted `migrations/` as a "trigger to revisit" item for multi-environment setups; the file was created proactively for reproducibility.
-

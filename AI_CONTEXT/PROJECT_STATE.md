@@ -1,12 +1,12 @@
 # Project State
 
-Last updated: 2026-05-28 Europe/London
+Last updated: 2026-05-31 Europe/London
 
 ## Repository Status
 
 - Git repository initialized on 2026-05-28.
 - Existing hidden local config directory `.claude/` is workstation-specific and ignored via `.gitignore`.
-- **Planning documents + working prototype in `playground/`.** Phase 1 infra scaffolded: Supabase schema applied, migration file created, connection verified.
+- **Working playground implementation in `playground/` with Supabase + OpenRouter integration.** Phase 1 infra scaffolded: Supabase schema applied, migration file created, connection verified.
 
 ## Project Goal
 
@@ -21,11 +21,11 @@ Two implementation tracks exist:
 | Track | Description | Status |
 |---|---|---|
 | **Local (prototype)** | JSON-based vector store, org-scoped directories, standalone Python scripts | 🟢 Working |
-| **Phase 1 (target)** | FastAPI + Supabase pgvector + OpenRouter (per `PHASE1_MVP_PLAN.md`) | 🟡 Infra ready (schema applied, connection verified) |
+| **Phase 1 (target)** | FastAPI + Supabase pgvector + OpenRouter (per `PHASE1_MVP_PLAN.md`) | 🟡 Partially prototyped in playground; modular backend structure still pending |
 
 ## Current Phase
 
-The system has a **working local prototype** (session 3 codex). Phase 1 (Supabase-backed) has its schema applied and connection verified — backend module code remains unimplemented.
+The system has a **working local + Supabase-backed playground prototype**. Core RAG flow is now demonstrated end-to-end (ingest, retrieve, answer with citations) through CLI and a playground FastAPI service. The formal Phase 1 module layout (`config.py`, `db/`, `ingestion/`, `retrieval/`, `routers/`) remains unimplemented as a separate codebase.
 
 ### What Exists
 
@@ -35,18 +35,21 @@ The system has a **working local prototype** (session 3 codex). Phase 1 (Supabas
   - `both`: writes to both simultaneously
   - Stable identity: `doc_id = {org}/{pdf_stem}`, `chunk_id = {doc_id}:c{chunk_order:04d}`
   - Idempotent: SHA-256 hash + `doc_registry` check skips unchanged files; changed files replace old chunks
-- `playground/ask.py` — loads all `.json` embedding files for a given `--org`, encodes the user's question, returns top-K chunks ranked by cosine similarity.
+- `playground/ask.py` — loads `.json` embeddings for a given `--org` (default `default_org`), encodes the user's question, returns top-K chunks ranked by cosine similarity. Also supports `--llm` to generate grounded answers via OpenRouter with stable chunk citations.
 - **Org-scoped storage:** embeddings sit under `playground/embeddings/<org>/` — each org directory is isolated.
 - Playground verification was previously done with a local sample PDF, but sample source documents and generated embeddings should not be committed to the repository.
 - `migrations/001_initial_schema.sql` — Supabase schema: `knowledge_chunks` table (pgvector), `doc_registry` table, `match_knowledge_chunks()` RPC function.
 - `playground/test_supabase.py` — connection, schema, and data verification. Supports `--doc-id` and `--query` flags for targeted checks.
+- `playground/openrouter_client.py` — shared OpenRouter helper (env loading, API key lookup, free model selection, chat completion call, optional raw payload path).
+- `playground/test_openrouter.py` — checks OpenRouter connectivity and runs a simple free-model completion smoke test.
+- `playground/api.py` — FastAPI playground service with `GET /health`, `POST /ingest` (PDF upload -> Supabase indexing), and `POST /query` (pgvector retrieval -> OpenRouter answer + cited sources).
 - Supabase project `org-wiki` (`ppypejlpkyiyifctwglc`) provisioned, schema applied, connection confirmed via both Python client and Supabase MCP.
 
 ### What's Next
 
-- Teach `playground/ask.py` to query Supabase via `match_knowledge_chunks()` for DB-backed retrieval.
-- Glue the retrieval output to a local or free LLM to generate natural-language answers (classic RAG).
-- Implement Phase 1 backend modules: `db/client.py`, `config.py`, ingestion pipeline, retrieval + prompt, API routers.
+- Add Supabase retrieval mode to `playground/ask.py` so query path can run from DB as well as local JSON.
+- Harden playground API for operational behavior (retry/backoff, richer error envelopes, request validation, and configurable retrieval filters).
+- Implement Phase 1 modular backend structure: `db/client.py`, `config.py`, ingestion pipeline, retrieval + prompt, API routers.
 
 ## Scope Boundaries
 
@@ -57,6 +60,8 @@ The system has a **working local prototype** (session 3 codex). Phase 1 (Supabas
 - character-budget chunking (no tokenizer dependency)
 - cosine similarity on in-memory numpy arrays
 - `--org` scoping for multi-org support
+- OpenRouter-backed answer generation with grounded prompt + citations
+- FastAPI playground API for upload/query testing
 
 ### In scope (Phase 1 — planned)
 
@@ -75,9 +80,9 @@ The system has a **working local prototype** (session 3 codex). Phase 1 (Supabas
 
 ## Immediate Priorities
 
-1. *(optional)* Build LLM glue script to complete the RAG loop in playground.
-2. Add Supabase pgvector storage to the playground indexing flow.
-3. Proceed to Phase 1 (FastAPI + Supabase) if infra requirements are needed.
+1. Keep AI context docs synchronized with active implementation changes.
+2. Add DB-backed retrieval path to `playground/ask.py` (currently local JSON retrieval only).
+3. Extract or migrate playground logic into Phase 1 modular backend structure.
 
 ## Development Environment
 
@@ -110,17 +115,18 @@ No `poppler-utils`, `unstructured`, or `langchain` needed for the local prototyp
 - The local prototype loads all embeddings into RAM. 104 chunks × 384 floats × 4 bytes ≈ 160 KB per doc — negligible for now, but watch for large-scale usage.
 - `sentence-transformers` downloads model weights (~80MB) on first run; cached at `~/.cache/huggingface/` afterwards.
 - The prototype uses character-budget chunking (~992 chars ≈ 256 tokens) to avoid tokenizer dependency. This is sufficient for `all-MiniLM-L6-v2` (max 256 tokens).
-- No LLM is called during retrieval — the user/developer reads the returned chunks. An LLM glue step needs to be built to get natural-language answers.
+- OpenRouter free-tier rate limits can constrain concurrent usage; free model availability can vary.
+- `playground/api.py` currently depends on environment variables in project `.env` and uses free-model auto-picking at request time.
 
 ## Key Deviations from RAG_SYSTEM_DESIGN.md
 
 | Aspect | Design doc says | What we built | Reason |
 |---|---|---|---|
-| Vector store | Supabase pgvector | JSON files in `playground/embeddings/<org>/` | Zero infra, instant setup |
+| Vector store | Supabase pgvector | Hybrid in playground: local JSON plus optional Supabase storage | Preserve zero-infra path while validating DB path incrementally |
 | PDF parser | `unstructured[pdf]` | `PyMuPDF` | No native deps needed (`poppler`) |
 | Chunking | `RecursiveCharacterTextSplitter` with tokenizer | Character-budget (~992 chars) | Avoids tokenizer import overhead |
-| Answer gen | OpenRouter LLM in `retrieval/prompt.py` | Not yet implemented | Pending user direction |
-| API layer | FastAPI + `uvicorn` | CLI scripts (`index_docs.py`, `ask.py`) | Faster iteration, no server |
+| Answer gen | OpenRouter LLM in `retrieval/prompt.py` | Implemented in playground (`ask.py --llm`, `api.py /query`) | Validate RAG loop early before formal Phase 1 module split |
+| API layer | FastAPI + `uvicorn` | Playground FastAPI (`playground/api.py`) + CLI scripts | Early vertical slice exists; structured Phase 1 module layout still pending |
 
 ## Coordination Notes
 

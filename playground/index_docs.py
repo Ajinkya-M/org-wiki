@@ -1,6 +1,6 @@
 """
 Usage:
-    python3 playground/index_docs.py <path> [path ...] --org <name> [--store local|supabase|both]
+    python3 playground/index_docs.py <path> [path ...] [--org <name>] [--store local|supabase|both]
 
 Examples:
     # Local JSON mode (default):
@@ -339,7 +339,7 @@ def main():
         description="Index PDF documents into local JSON files and/or Supabase pgvector."
     )
     parser.add_argument("paths", nargs="+", help="PDF files or directories to index")
-    parser.add_argument("--org", required=True, help="Organisation name")
+    parser.add_argument("--org", default="default_org", help="Organisation name (default: default_org)")
     parser.add_argument(
         "--store",
         default="local",
@@ -348,7 +348,7 @@ def main():
     )
     args = parser.parse_args()
 
-    org_name = args.org.strip().lower().replace(" ", "_")
+    org_name = args.org.strip().lower().replace(" ", "_") if args.org else "default_org"
     store_mode = args.store
 
     pdfs = collect_pdfs(args.paths)

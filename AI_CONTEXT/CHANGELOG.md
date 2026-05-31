@@ -1,5 +1,62 @@
 # Agent Change Log
 
+## 2026-05-31 Europe/London
+
+### codex
+
+- Reconciled AI context files to match the current implemented system state (playground CLI + Supabase indexing + OpenRouter answering + playground FastAPI API).
+- Updated `AI_CONTEXT/PROJECT_STATE.md`:
+  - moved status from planning/infra-ready framing to working vertical-slice framing
+  - documented `playground/openrouter_client.py`, `playground/test_openrouter.py`, and `playground/api.py`
+  - refreshed immediate priorities and constraints
+  - corrected architecture deviation table to remove stale "answer generation not implemented" statement
+- Updated `AI_CONTEXT/DECISIONS.md`:
+  - advanced last-updated timestamp
+  - changed D-010 to superseded status
+  - added D-013 (LLM-backed playground answering) and D-014 (playground FastAPI vertical slice)
+  - added O-004 to track retrieval-backend parity gap between CLI and API
+- Rewrote `AI_CONTEXT/DOC_ANALYSIS.md` to reflect current reality (implemented vertical slice, remaining modularization and hardening gaps).
+- Updated `AI_CONTEXT/TASK_BOARD.md` with T-018 claim for this context reconciliation task.
+
+### codex
+
+- Added `playground/test_openrouter.py` to validate OpenRouter connectivity against a free chat model.
+- Script behavior: loads `.env`, accepts both `OPENROUTER_API_KEY` and `OPEN_ROUTER_API_KEY`, fetches model catalog, auto-picks an available `:free` model, sends a test prompt, and prints PASS/FAIL.
+- Validation run: `python3 playground/test_openrouter.py` succeeded with a free model and returned a response.
+- Updated `AI_CONTEXT/TASK_BOARD.md` T-015 status.
+- Added `playground/openrouter_client.py` as a shared OpenRouter integration module (`load_env`, key lookup, free-model picker, chat completion call).
+- Integrated `playground/ask.py` with `--llm` mode using the shared helper. New flow: retrieve top-K chunks -> build grounded prompt with source + chunk_id -> call OpenRouter -> print answer + source list.
+- Preserved existing non-LLM behavior; when LLM call fails or key is missing, `ask.py` falls back to raw chunk output.
+- Validation runs:
+  - `python3 playground/ask.py --help` (new flags visible)
+  - `python3 playground/test_openrouter.py` (PASS)
+  - `python3 playground/ask.py "test question" --org example_org --llm` (expected early exit because no local embeddings present)
+- Updated org handling defaults in playground scripts:
+  - `playground/index_docs.py`: `--org` is now optional with default `default_org`
+  - `playground/ask.py`: `--org` is now optional with default `default_org`
+  - Queries run without `--org` now target `playground/embeddings/default_org/`
+- Validation runs:
+  - `python3 playground/index_docs.py --help`
+  - `python3 playground/ask.py --help`
+- Added LLM debug output support:
+  - `playground/ask.py` now supports `--print-prompt` and `--print-raw-response`
+  - `playground/openrouter_client.py` now exposes `chat_completion_with_payload()` for raw response inspection
+- Validation run:
+  - `python3 playground/ask.py "Is road side assistance provided by Ayvens for client?" --llm --print-prompt --print-raw-response -n 3`
+- Added `playground/api.py` FastAPI service with:
+  - `POST /ingest`: accepts PDF upload + optional `org` (defaults to `default_org`), chunks/embeds with `all-MiniLM-L6-v2`, stores vectors in Supabase `knowledge_chunks` + `doc_registry` via existing indexing pipeline.
+  - `POST /query`: accepts question + optional `org`, embeds question, retrieves top matches from pgvector RPC, filters by org prefix (`{org}/`), calls OpenRouter free model, returns answer + source citations.
+- Reused shared OpenRouter module and existing indexing helpers to avoid code duplication.
+- Validation run:
+  - `python3 -m py_compile playground/api.py playground/openrouter_client.py playground/ask.py`
+
+## 2026-05-30
+
+### me
+
+- Created `PALYGROUND_LLM_RAG_PLAN.md` — plan to add OpenRouter LLM inference to `playground/ask.py` via `--llm` flag
+- Added T-015 to `AI_CONTEXT/TASK_BOARD.md` for the LLM RAG playground task
+
 ## 2026-05-28 Europe/London
 
 ### me (session 2 — playground Supabase integration)

@@ -1,6 +1,6 @@
 # Task Board
 
-Last updated: 2026-05-28 Europe/London
+Last updated: 2026-05-31 Europe/London
 
 ## Status Legend
 
@@ -28,6 +28,11 @@ Last updated: 2026-05-28 Europe/London
 | T-012 | done | codex | Build local-only indexing & query scripts in playground/ | `playground/index_docs.py`, `playground/ask.py`, `playground/embeddings/` | Embeddings JSON as local vector store — no DB needed |
 | T-013 | done | codex | Sync docs to reflect working prototype | `PROJECT_STATE.md`, `DECISIONS.md`, `RAG_SYSTEM_DESIGN.md`, `PHASE1_MVP_PLAN.md` | All context files updated to show current state |
 | T-014 | done | codex | Add implementation plan for Supabase pgvector-backed playground storage | `SUPABASE_PGVECTOR_PLAYGROUND_PLAN.md`, `AI_CONTEXT/*` | Completed on 2026-05-28 Europe/London |
+
+| T-015 | done | codex | Add LLM answer generation to playground query flow | `playground/ask.py`, `playground/openrouter_client.py`, `playground/test_openrouter.py`, `PALYGROUND_LLM_RAG_PLAN.md` | Added shared OpenRouter helper module and integrated `ask.py --llm` with free-model selection, grounded prompting, answer output, and fallback to raw chunks |
+| T-016 | done | codex | Add prompt/response debug output for LLM query runs | `playground/ask.py`, `playground/openrouter_client.py` | Added `--print-prompt` and `--print-raw-response` flags; verified with `ask.py --llm` run printing both prompt and provider payload |
+| T-017 | done | codex | Build REST API for ingest + question answering | `playground/api.py`, `playground/openrouter_client.py` | Added FastAPI service with `/ingest` (PDF upload, default org fallback, Supabase pgvector indexing) and `/query` (pgvector retrieval + OpenRouter answer + citations) |
+| T-018 | done | codex | Reconcile and refresh AI context files with current implemented system state | `AI_CONTEXT/*` | Completed on 2026-05-31 Europe/London: synced project state, decisions, doc analysis, task board, and changelog with current playground + API + LLM capabilities |
 
 ## Claim Protocol
 
