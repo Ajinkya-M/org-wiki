@@ -10,16 +10,16 @@ Current implementation focus is a **playground vertical slice**:
 - retrieval from local vectors (CLI) and Supabase RPC (API)
 - grounded answer generation via OpenRouter free chat models
 
-The planned production-oriented structure is documented in `PHASE1_MVP_PLAN.md` and `RAG_SYSTEM_DESIGN.md`.
+The planned production-oriented structure is documented in `plan/phase/phase1-mvp-plan.md` and `plan/architecture/rag-system-design.md`.
 
 ## Repository Structure
 
-- `playground/index_docs.py` - ingest PDFs, create chunks, embed, store to `local|supabase|both`
-- `playground/ask.py` - local retrieval query CLI with optional `--llm` answer generation
-- `playground/api.py` - FastAPI playground service (`/health`, `/ingest`, `/query`)
-- `playground/openrouter_client.py` - shared OpenRouter client utilities
-- `playground/test_supabase.py` - Supabase connectivity/schema/RPC checks
-- `playground/test_openrouter.py` - OpenRouter connectivity smoke test
+- `playground/app/index_docs.py` - ingest PDFs, create chunks, embed, store to `local|supabase|both`
+- `playground/app/ask.py` - local retrieval query CLI with optional `--llm` answer generation
+- `playground/app/api.py` - FastAPI playground service (`/health`, `/ingest`, `/query`)
+- `playground/app/openrouter_client.py` - shared OpenRouter client utilities
+- `playground/tests/test_supabase.py` - Supabase connectivity/schema/RPC checks
+- `playground/tests/test_openrouter.py` - OpenRouter connectivity smoke test
 - `migrations/001_initial_schema.sql` - Supabase schema and retrieval RPC function
 - `AI_CONTEXT/` - shared project state, decisions, task board, and changelog for agent coordination
 
@@ -50,8 +50,8 @@ pip3 install --break-system-packages \
 ### 1) Index documents
 
 ```bash
-python3 playground/index_docs.py \
-  --pdf-dir playground \
+python3 playground/app/index_docs.py \
+  playground/data/input \
   --org default_org \
   --store local
 ```
@@ -59,8 +59,8 @@ python3 playground/index_docs.py \
 To index into Supabase as well:
 
 ```bash
-python3 playground/index_docs.py \
-  --pdf-dir playground \
+python3 playground/app/index_docs.py \
+  playground/data/input \
   --org default_org \
   --store both
 ```
@@ -68,19 +68,19 @@ python3 playground/index_docs.py \
 ### 2) Ask questions from local embeddings
 
 ```bash
-python3 playground/ask.py "What is the roadside assistance policy?" --org default_org -n 3
+python3 playground/app/ask.py "What is the roadside assistance policy?" --org default_org -n 3
 ```
 
 With LLM synthesis (falls back to raw chunks if model call fails):
 
 ```bash
-python3 playground/ask.py "What is the roadside assistance policy?" --org default_org --llm
+python3 playground/app/ask.py "What is the roadside assistance policy?" --org default_org --llm
 ```
 
 ### 3) Run the playground API
 
 ```bash
-uvicorn playground.api:app --reload
+uvicorn playground.app.api:app --reload
 ```
 
 - `GET /health`

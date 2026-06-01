@@ -1,7 +1,7 @@
 # Phase 1 MVP — Backend Pipeline Plan
 ## Org Wiki RAG System
 
-> ⏩ **Status:** This plan has **not been implemented yet**. A local prototype exists at `playground/index_docs.py` + `playground/ask.py` (JSON-based vector store, no Supabase). See `AI_CONTEXT/PROJECT_STATE.md` and `AI_CONTEXT/DECISIONS.md` for the current state. This document remains the target architecture for Phase 1.
+> ⏩ **Status:** This plan has **not been implemented yet**. A local prototype exists at `playground/app/index_docs.py` + `playground/app/ask.py` (JSON-based vector store, no Supabase). See `AI_CONTEXT/PROJECT_STATE.md` and `AI_CONTEXT/DECISIONS.md` for the current state. This document remains the target architecture for Phase 1.
 
 **Goal:** A locally-runnable Python + FastAPI backend that accepts one or more PDF files, chunks and embeds them into Supabase pgvector, and exposes a query endpoint that retrieves relevant information with clearly cited sources.
 
@@ -307,7 +307,7 @@ def _make_chunk_id(doc_id: str, chunk_order: int, page: int | None = None) -> st
     """
     Stable chunk identifier format: {doc_id}:p{page}:c{chunk_order}
     This is used for citation fidelity — do NOT use retrieval rank as a citation handle.
-    See RAG_SYSTEM_DESIGN.md §5 and DECISIONS.md D-005.
+    See plan/architecture/rag-system-design.md §5 and DECISIONS.md D-005.
     """
     page_part = f"p{page:03d}" if page is not None else "p000"
     return f"{doc_id}:{page_part}:c{chunk_order:04d}"

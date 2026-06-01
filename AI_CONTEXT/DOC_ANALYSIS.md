@@ -1,19 +1,19 @@
 # Design And Plan Analysis
 
-Last updated: 2026-05-31 Europe/London
+Last updated: 2026-06-01 Europe/London
 
 ## Executive Read
 
-The repository has moved from planning-only to a working playground vertical slice. The architecture docs remain directionally correct, and the MVP plan still defines the intended module layout, but implementation currently lives in `playground/` rather than in the planned package structure.
+The repository has moved from planning-only to a working playground vertical slice. The architecture docs remain directionally correct, and the MVP plan still defines the intended module layout, but implementation currently lives in `playground/app/` rather than in the planned package structure.
 
 ## What Is Now True
 
 ### 1. End-to-end RAG behavior exists in playground
 
-- ingestion supports local JSON, Supabase, or both (`playground/index_docs.py`)
-- retrieval is available from local embeddings in CLI (`playground/ask.py`)
-- answer generation via OpenRouter is integrated (`playground/openrouter_client.py`, `playground/ask.py --llm`)
-- API endpoints exist for ingest and query (`playground/api.py`)
+- ingestion supports local JSON, Supabase, or both (`playground/app/index_docs.py`)
+- retrieval is available from local embeddings in CLI (`playground/app/ask.py`)
+- answer generation via OpenRouter is integrated (`playground/app/openrouter_client.py`, `playground/app/ask.py --llm`)
+- API endpoints exist for ingest and query (`playground/app/api.py`)
 
 ### 2. Supabase schema and idempotency path are validated
 
@@ -30,12 +30,12 @@ The repository has moved from planning-only to a working playground vertical sli
 
 ### 1. Planned module structure is not yet materialized
 
-`PHASE1_MVP_PLAN.md` still expects implementation under `config.py`, `db/`, `ingestion/`, `retrieval/`, and `routers/`. Equivalent behavior exists, but inside playground scripts.
+`plan/phase/phase1-mvp-plan.md` still expects implementation under `config.py`, `db/`, `ingestion/`, `retrieval/`, and `routers/`. Equivalent behavior exists, but inside playground scripts.
 
 ### 2. Retrieval backend parity is incomplete across interfaces
 
-- `playground/ask.py` retrieves from local JSON only
-- `playground/api.py` query path retrieves from Supabase RPC
+- `playground/app/ask.py` retrieves from local JSON only
+- `playground/app/api.py` query path retrieves from Supabase RPC
 - this split is useful for iteration, but should be explicit in docs and UX
 
 ### 3. Operational hardening remains light
@@ -46,8 +46,8 @@ The repository has moved from planning-only to a working playground vertical sli
 
 ## Working Interpretation Of The Docs
 
-- `RAG_SYSTEM_DESIGN.md`: north-star architecture and production concerns
-- `PHASE1_MVP_PLAN.md`: target backend package design and implementation baseline
+- `plan/architecture/rag-system-design.md`: north-star architecture and production concerns
+- `plan/phase/phase1-mvp-plan.md`: target backend package design and implementation baseline
 - `playground/*`: validated integration slice proving the main RAG loop and schema assumptions
 
 ## Recommended Next Documentation Discipline

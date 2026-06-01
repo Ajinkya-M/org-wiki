@@ -1,13 +1,13 @@
 """
 Usage:
     # Run all connection and data checks:
-    python3 playground/test_supabase.py
+    python3 playground/tests/test_supabase.py
 
     # Optionally verify a specific doc_id was indexed:
-    python3 playground/test_supabase.py --doc-id example_org/Driver_Handbook
+    python3 playground/tests/test_supabase.py --doc-id example_org/Driver_Handbook
 
     # Quick check with match_knowledge_chunks (optional):
-    python3 playground/test_supabase.py --doc-id example_org/Driver_Handbook --query
+    python3 playground/tests/test_supabase.py --doc-id example_org/Driver_Handbook --query
 """
 
 import sys
@@ -16,7 +16,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from supabase import create_client
 
-load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent.parent / ".env")
 
 import os
 import argparse

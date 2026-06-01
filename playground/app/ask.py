@@ -1,13 +1,13 @@
 """
 Usage:
-    python3 playground/ask.py "your question here" [--org <name>] [-n top-k] [-t threshold] [--llm]
+    python3 playground/app/ask.py "your question here" [--org <name>] [-n top-k] [-t threshold] [--llm]
 
 Examples:
-    python3 playground/ask.py "what is the support helpline number?" --org example_org -n 5
-    python3 playground/ask.py "how do I submit expenses?" --org example_org -t 0.3
-    python3 playground/ask.py "where is the office located?" --org example_org -n 10 -t 0.25
+    python3 playground/app/ask.py "what is the support helpline number?" --org example_org -n 5
+    python3 playground/app/ask.py "how do I submit expenses?" --org example_org -t 0.3
+    python3 playground/app/ask.py "where is the office located?" --org example_org -n 10 -t 0.25
 
-Looks up all .json embedding files in playground/embeddings/<org>/ and returns
+Looks up all .json embedding files in playground/data/embeddings/<org>/ and returns
 the most relevant chunks ranked by cosine similarity.
 """
 
@@ -22,7 +22,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-from openrouter_client import (
+from playground.app.openrouter_client import (
     chat_completion_with_payload,
     get_api_key,
     get_default_model,
@@ -32,7 +32,7 @@ from openrouter_client import (
 
 
 # --- Config ----------------------------------------------------------------
-BASE_DIR = Path(__file__).resolve().parent / "embeddings"
+BASE_DIR = Path(__file__).resolve().parent.parent / "data" / "embeddings"
 MODEL_NAME = "all-MiniLM-L6-v2"
 
 
@@ -144,7 +144,7 @@ def main():
     parser.add_argument(
         "--org",
         default="default_org",
-        help="Organisation name (subdirectory in playground/embeddings/, default: default_org)",
+        help="Organisation name (subdirectory in playground/data/embeddings/, default: default_org)",
     )
     parser.add_argument("-n", type=int, default=3, help="Top-K results to return (default: 3)")
     parser.add_argument("-t", type=float, default=0.0, help="Similarity threshold (default: 0.0)")
@@ -163,7 +163,7 @@ def main():
     if not embed_dir.exists():
         print(f"Embeddings not found for organisation '{args.org}'")
         print(f"  Expected: {embed_dir / '*.json'}")
-        print("Run playground/index_docs.py first (uses default_org when --org is omitted).")
+        print("Run playground/app/index_docs.py first (uses default_org when --org is omitted).")
         sys.exit(1)
 
     print(f"Loading model: {MODEL_NAME} …")

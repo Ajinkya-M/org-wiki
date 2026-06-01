@@ -1,19 +1,19 @@
 """
 Usage:
-    python3 playground/index_docs.py <path> [path ...] [--org <name>] [--store local|supabase|both]
+    python3 playground/app/index_docs.py <path> [path ...] [--org <name>] [--store local|supabase|both]
 
 Examples:
     # Local JSON mode (default):
-    python3 playground/index_docs.py handbook.pdf --org example_org
-    python3 playground/index_docs.py handbook.pdf --org example_org --store local
+    python3 playground/app/index_docs.py handbook.pdf --org example_org
+    python3 playground/app/index_docs.py handbook.pdf --org example_org --store local
 
     # Supabase pgvector mode:
-    python3 playground/index_docs.py handbook.pdf --org example_org --store supabase
+    python3 playground/app/index_docs.py handbook.pdf --org example_org --store supabase
 
     # Both modes at once:
-    python3 playground/index_docs.py docs/ --org example_org --store both
+    python3 playground/app/index_docs.py docs/ --org example_org --store both
 
-Output (local mode): saves one .json file per PDF into playground/embeddings/<org>/
+Output (local mode): saves one .json file per PDF into playground/data/embeddings/<org>/
 Output (supabase mode): inserts rows into knowledge_chunks and updates doc_registry
 
 Dependencies: PyMuPDF, sentence-transformers, numpy, python-dotenv, supabase
@@ -34,7 +34,7 @@ from sentence_transformers import SentenceTransformer
 
 
 # --- Config ----------------------------------------------------------------
-BASE_DIR = Path(__file__).resolve().parent / "embeddings"
+BASE_DIR = Path(__file__).resolve().parent.parent / "data" / "embeddings"
 MODEL_NAME = "all-MiniLM-L6-v2"
 CHUNK_BUDGET_CHARS = 992
 
@@ -43,7 +43,7 @@ CHUNK_BUDGET_CHARS = 992
 
 def load_dotenv_if_present():
     from dotenv import load_dotenv
-    env_path = Path(__file__).resolve().parent.parent / ".env"
+    env_path = Path(__file__).resolve().parent.parent.parent / ".env"
     load_dotenv(dotenv_path=env_path)
 
 

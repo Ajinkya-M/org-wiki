@@ -1,12 +1,12 @@
 """
 Usage:
-    python3 playground/query_embeddings.py <embeddings.json> "your question here"
+    python3 playground/app/query_embeddings.py <embeddings.json> "your question here"
 
 Examples:
-    python3 playground/query_embeddings.py playground/handbook_embeddings.json \
+    python3 playground/app/query_embeddings.py playground/handbook_embeddings.json \
         "What is the Ayvens helpline number?"
 
-    python3 playground/query_embeddings.py playground/handbook_embeddings.json \
+    python3 playground/app/query_embeddings.py playground/handbook_embeddings.json \
         "How do I report an accident?"
 
 Dependencies (all pre-installed):

@@ -26,8 +26,8 @@ If a step differs between WSL2/Ubuntu and other platforms, document the WSL2 var
 
 Before making changes, every agent must read these files in order:
 
-1. `RAG_SYSTEM_DESIGN.md`
-2. `PHASE1_MVP_PLAN.md`
+1. `plan/architecture/rag-system-design.md`
+2. `plan/phase/phase1-mvp-plan.md`
 3. `AI_CONTEXT/PROJECT_STATE.md`
 4. `AI_CONTEXT/TASK_BOARD.md`
 5. `AI_CONTEXT/DECISIONS.md`

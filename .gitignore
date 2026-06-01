@@ -36,6 +36,5 @@ __pypackages__/
 *.spec
 .DS_Store
 .claude/
-playground/*.pdf
-playground/*_embeddings.json
-playground/embeddings/
+playground/data/input/*.pdf
+playground/data/embeddings/

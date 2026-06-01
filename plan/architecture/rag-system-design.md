@@ -6,12 +6,12 @@ This document describes a **Retrieval-Augmented Generation (RAG)** system built 
 
 | Track | Vector Store | Runtime | Status |
 |---|---|---|---|
-| **Local prototype** | JSON files (`playground/embeddings/<org>/`) | Standalone Python CLI | 🟢 Working |
+| **Local prototype** | JSON files (`playground/data/embeddings/<org>/`) | Standalone Python CLI | 🟢 Working |
 | **Target architecture** | Supabase pgvector | FastAPI + Vercel | 📝 Planned |
 
 This document describes the **target architecture**. For the current working prototype, see:
-- `playground/index_docs.py` — PDF → text → chunks → embeddings → JSON
-- `playground/ask.py` — query → embed → cosine similarity → top-K chunks
+- `playground/app/index_docs.py` — PDF → text → chunks → embeddings → JSON
+- `playground/app/ask.py` — query → embed → cosine similarity → top-K chunks
 
 The target architecture uses **Supabase pgvector** as the vector store, **sentence-transformers** for embeddings (local, free), and **OpenRouter free LLMs** for answer generation.
 

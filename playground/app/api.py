@@ -4,7 +4,7 @@ FastAPI playground service for:
 2) answering questions with pgvector retrieval + OpenRouter LLM
 
 Run:
-    uvicorn playground.api:app --reload
+    uvicorn playground.app.api:app --reload
 """
 
 from __future__ import annotations
@@ -16,8 +16,8 @@ from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 from sentence_transformers import SentenceTransformer
 
-from playground.index_docs import get_supabase_client, load_dotenv_if_present, process_pdf
-from playground.openrouter_client import (
+from playground.app.index_docs import get_supabase_client, load_dotenv_if_present, process_pdf
+from playground.app.openrouter_client import (
     chat_completion,
     get_api_key,
     get_default_model,

@@ -6,7 +6,7 @@ Upgrade the existing playground indexing flow so it can store document chunks an
 
 This plan is intentionally scoped to the current playground workflow:
 
-- keep `playground/index_docs.py` as the main entry point
+- keep `playground/app/index_docs.py` as the main entry point
 - reuse the current PDF extraction, chunking, and embedding logic
 - add a Supabase-backed storage mode
 - avoid jumping straight to the full FastAPI Phase 1 backend
@@ -15,16 +15,16 @@ This plan is intentionally scoped to the current playground workflow:
 
 The repository already has:
 
-- `playground/index_docs.py`
+- `playground/app/index_docs.py`
   - extracts PDF text with `PyMuPDF`
   - chunks text with a character budget
   - generates embeddings with `all-MiniLM-L6-v2`
-  - writes `.json` files under `playground/embeddings/<org>/`
+  - writes `.json` files under `playground/data/embeddings/<org>/`
 - `migrations/001_initial_schema.sql`
   - `knowledge_chunks` table with `VECTOR(384)`
   - `doc_registry` table
   - `match_knowledge_chunks()` RPC
-- `playground/test_supabase.py`
+- `playground/tests/test_supabase.py`
   - verifies Supabase connectivity and schema availability
 
 ## Feature Target
@@ -54,7 +54,7 @@ This change should not:
 
 Recommended first step.
 
-Enhance `playground/index_docs.py` to support:
+Enhance `playground/app/index_docs.py` to support:
 
 - `--store local`
 - `--store supabase`
@@ -72,7 +72,7 @@ Alternative if code clarity is preferred over one-script convenience.
 
 Example:
 
-- `playground/index_docs.py` stays local-only
+- `playground/app/index_docs.py` stays local-only
 - `playground/index_docs_supabase.py` handles DB insertion
 
 This is acceptable, but Option A is better if the goal is gradual evolution from the current prototype.
@@ -174,7 +174,7 @@ Use `.env` at the project root and read:
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_KEY`
 
-Reuse the pattern already proven in `playground/test_supabase.py`.
+Reuse the pattern already proven in `playground/tests/test_supabase.py`.
 
 Expected outcome:
 
@@ -272,7 +272,7 @@ Expected outcome:
 
 Either:
 
-- extend `playground/test_supabase.py`
+- extend `playground/tests/test_supabase.py`
 
 or:
 
@@ -293,9 +293,9 @@ Expected outcome:
 Example commands:
 
 ```bash
-python3 playground/index_docs.py docs/handbook.pdf --org example_org --store local
-python3 playground/index_docs.py docs/handbook.pdf --org example_org --store supabase
-python3 playground/index_docs.py docs/ --org example_org --store both
+python3 playground/app/index_docs.py docs/handbook.pdf --org example_org --store local
+python3 playground/app/index_docs.py docs/handbook.pdf --org example_org --store supabase
+python3 playground/app/index_docs.py docs/ --org example_org --store both
 ```
 
 Optional future flags:
@@ -342,19 +342,19 @@ Mitigation:
 
 ## Recommended Order For Claude Code
 
-1. Refactor `playground/index_docs.py` into reusable helpers without changing behavior.
+1. Refactor `playground/app/index_docs.py` into reusable helpers without changing behavior.
 2. Add `.env` loading and Supabase client initialization.
 3. Add `--store` CLI with `local` as default.
 4. Implement `doc_id`, `chunk_id`, and `source_hash`.
 5. Add Supabase insert + registry upsert for one document.
 6. Add skip/replacement logic.
-7. Verify with `playground/test_supabase.py` and one real PDF.
+7. Verify with `playground/tests/test_supabase.py` and one real PDF.
 8. Only after that, consider adding DB-backed retrieval.
 
 ## Handoff Note
 
 Once this feature works, the natural next step is:
 
-- either teach `playground/ask.py` to query Supabase via `match_knowledge_chunks()`
+- either teach `playground/app/ask.py` to query Supabase via `match_knowledge_chunks()`
 - or begin the proper Phase 1 FastAPI ingestion/retrieval modules
 

@@ -2,18 +2,18 @@
 
 ## Goal
 
-Extend the existing playground query flow (`playground/ask.py`) so that instead of only printing raw top-K chunks, it can pass those chunks to an OpenRouter free LLM and return a natural-language answer with source citations — completing the classic RAG loop entirely within the playground.
+Extend the existing playground query flow (`playground/app/ask.py`) so that instead of only printing raw top-K chunks, it can pass those chunks to an OpenRouter free LLM and return a natural-language answer with source citations — completing the classic RAG loop entirely within the playground.
 
 ## Current Baseline
 
 The repository already has:
 
-- `playground/index_docs.py`
+- `playground/app/index_docs.py`
   - PDF → text extraction (PyMuPDF) → chunking (character-budget) → embedding (`all-MiniLM-L6-v2`)
-  - Local JSON storage under `playground/embeddings/<org>/`
+  - Local JSON storage under `playground/data/embeddings/<org>/`
   - Supabase pgvector storage via `--store supabase|both`
   - SHA-256 idempotency, stable `doc_id`/`chunk_id`
-- `playground/ask.py`
+- `playground/app/ask.py`
   - Loads all `.json` embedding files for a given `--org`
   - Encodes user query with the same model
   - Returns top-K chunks ranked by cosine similarity
@@ -23,7 +23,7 @@ The repository already has:
 
 ## Feature Target
 
-Add a new path to `playground/ask.py`:
+Add a new path to `playground/app/ask.py`:
 
 ```
 User Question → Embed → Cosine Search → Top-K Chunks → Prompt Builder → OpenRouter LLM → Answer + Citations
@@ -41,7 +41,7 @@ When `--llm` is omitted, behaviour is identical to the current script.
 
 This change should not:
 
-- modify `playground/index_docs.py`
+- modify `playground/app/index_docs.py`
 - add FastAPI or any server component
 - add Supabase-backed retrieval to the playground query path (Phase 1 concern)
 - add auth, RLS, or frontend
@@ -52,7 +52,7 @@ This change should not:
 
 ### Option A (recommended): Extend `ask.py` with `--llm` flag
 
-Add to `playground/ask.py`:
+Add to `playground/app/ask.py`:
 
 | Flag | Type | Default | Description |
 |---|---|---|---|
@@ -249,8 +249,8 @@ Expected outcome:
 
 The feature is complete when all of these are true:
 
-- [ ] `python3 playground/ask.py "question" --org example_org` (no `--llm`) produces exactly the same output as before
-- [ ] `python3 playground/ask.py "question" --org example_org --llm` prints an answer + sources
+- [ ] `python3 playground/app/ask.py "question" --org example_org` (no `--llm`) produces exactly the same output as before
+- [ ] `python3 playground/app/ask.py "question" --org example_org --llm` prints an answer + sources
 - [ ] The answer cites source filenames and chunk IDs from the context
 - [ ] Running with a missing API key prints a clear error and falls back to chunks
 - [ ] Output is readable and well-formatted

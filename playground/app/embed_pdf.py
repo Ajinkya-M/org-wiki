@@ -1,10 +1,10 @@
 """
 Usage:
-    python3 playground/embed_pdf.py <path_to_pdf> [output_json_path]
+    python3 playground/app/embed_pdf.py <path_to_pdf> [output_json_path]
 
 Examples:
-    python3 playground/embed_pdf.py docs/manual.pdf
-    python3 playground/embed_pdf.py docs/manual.pdf embeddings.json
+    python3 playground/app/embed_pdf.py docs/manual.pdf
+    python3 playground/app/embed_pdf.py docs/manual.pdf embeddings.json
 
 Dependencies (all pre-installed in this environment):
     PyMuPDF, sentence-transformers, torch, numpy

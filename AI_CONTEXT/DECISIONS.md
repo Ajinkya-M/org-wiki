@@ -1,6 +1,6 @@
 # Decisions
 
-Last updated: 2026-05-31 Europe/London
+Last updated: 2026-06-01 Europe/London
 
 ## Implementation Paths
 
@@ -29,8 +29,8 @@ The project now has two parallel tracks. This section records the decisions take
 ### D-009: Org-scoped subdirectories for embeddings
 
 - Status: accepted
-- Rationale: `playground/embeddings/<org>/` keeps each organisation's data fully isolated. The `--org` flag on both `index_docs.py` and `ask.py` enforces this at the CLI level. No cross-contamination between orgs.
-- Consequence: queries must specify `--org`; there is no cross-org search. This matches the production requirement (department scoping in RAG_SYSTEM_DESIGN.md §5).
+- Rationale: `playground/data/embeddings/<org>/` keeps each organisation's data fully isolated. The `--org` flag on both `index_docs.py` and `ask.py` enforces this at the CLI level. No cross-contamination between orgs.
+- Consequence: queries must specify `--org`; there is no cross-org search. This matches the production requirement (department scoping in plan/architecture/rag-system-design.md §5).
 
 ### D-010: No LLM in the prototype retrieval step
 
@@ -42,23 +42,29 @@ The project now has two parallel tracks. This section records the decisions take
 
 - Status: accepted
 - Rationale: retrieval quality has been validated enough to add a grounded answer step using OpenRouter free models. This unlocks an end-to-end RAG loop while preserving the ability to inspect raw chunks.
-- Consequence: `playground/ask.py` supports `--llm`; when key/model/network issues occur, the script falls back to raw chunk output.
+- Consequence: `playground/app/ask.py` supports `--llm`; when key/model/network issues occur, the script falls back to raw chunk output.
 
 ### D-014: Playground FastAPI vertical slice added before Phase 1 module split
 
 - Status: accepted
-- Rationale: adding `playground/api.py` (`/health`, `/ingest`, `/query`) provides a practical integration surface for testing ingestion + retrieval + answer generation without waiting for full Phase 1 scaffolding.
+- Rationale: adding `playground/app/api.py` (`/health`, `/ingest`, `/query`) provides a practical integration surface for testing ingestion + retrieval + answer generation without waiting for full Phase 1 scaffolding.
 - Consequence: API capability exists, but code is still playground-oriented and not yet aligned to the planned modular backend package structure.
+
+### D-015: Repository structure normalization and plan centralization
+
+- Status: accepted
+- Rationale: consolidating all plan documents under `plan/` and splitting playground into `app/`, `tests/`, and `data/` creates clearer ownership boundaries and reduces onboarding friction for multi-agent collaboration.
+- Consequence: historical file paths changed to `plan/architecture/rag-system-design.md`, `plan/phase/phase1-mvp-plan.md`, and `playground/app/*` script locations. All references and run commands must use the new paths.
 
 ## Active Decisions
 
 ### D-001: Phase 1 plan is the execution baseline
 
 - Status: accepted
-- Reason: `PHASE1_MVP_PLAN.md` is the most concrete implementation guide and intentionally narrows the broader system design into an MVP slice.
+- Reason: `plan/phase/phase1-mvp-plan.md` is the most concrete implementation guide and intentionally narrows the broader system design into an MVP slice.
 - Consequence: agents should not add auth, deployment splitting, hybrid search, or re-ranking unless the scope is explicitly changed.
 
-### D-002: `RAG_SYSTEM_DESIGN.md` is the north-star architecture
+### D-002: `plan/architecture/rag-system-design.md` is the north-star architecture
 
 - Status: accepted
 - Reason: it captures future-state concerns that should influence extensibility, even if they are out of scope for the first implementation.
@@ -107,7 +113,7 @@ The project now has two parallel tracks. This section records the decisions take
 ### O-004: Single retrieval backend in playground query flow
 
 - Status: open
-- Current behavior: `playground/ask.py` retrieves from local JSON embeddings only; Supabase retrieval is available via `playground/api.py` query path.
+- Current behavior: `playground/app/ask.py` retrieves from local JSON embeddings only; Supabase retrieval is available via `playground/app/api.py` query path.
 - Risk: behavior differs across interfaces (CLI vs API), which may confuse validation and acceptance testing.
 - Preferred direction: add an explicit retrieval backend switch in `ask.py` (for example local/supabase) and document expected parity.
 
@@ -120,5 +126,5 @@ The project now has two parallel tracks. This section records the decisions take
 ### O-003: Migration layout
 
 - Status: resolved
-- Decision: `migrations/001_initial_schema.sql` created with all 4 SQL blocks from `PHASE1_MVP_PLAN.md`. Schema applied to Supabase project `org-wiki` via SQL Editor. Connection verified via both Python client and Supabase MCP.
+- Decision: `migrations/001_initial_schema.sql` created with all 4 SQL blocks from `plan/phase/phase1-mvp-plan.md`. Schema applied to Supabase project `org-wiki` via SQL Editor. Connection verified via both Python client and Supabase MCP.
 - The original decision noted `migrations/` as a "trigger to revisit" item for multi-environment setups; the file was created proactively for reproducibility.

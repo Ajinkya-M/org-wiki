@@ -2,9 +2,9 @@
 Quick OpenRouter connectivity test for free chat models.
 
 Usage:
-    python3 playground/test_openrouter.py
-    python3 playground/test_openrouter.py --model mistralai/mistral-7b-instruct:free
-    python3 playground/test_openrouter.py --prompt "Reply with OK"
+    python3 playground/tests/test_openrouter.py
+    python3 playground/tests/test_openrouter.py --model mistralai/mistral-7b-instruct:free
+    python3 playground/tests/test_openrouter.py --prompt "Reply with OK"
 """
 
 import argparse
@@ -12,7 +12,7 @@ import os
 import sys
 
 import httpx
-from openrouter_client import (
+from playground.app.openrouter_client import (
     chat_completion,
     get_api_key,
     get_default_model,
