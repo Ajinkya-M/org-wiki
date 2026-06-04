@@ -84,13 +84,12 @@ The system has a **working local + Supabase-backed playground prototype**. Core 
 ### In scope (Phase 1 — planned)
 
 - local runtime only
-- backend-only implementation
+- backend-only implementation (frontend is separate; see playground scope)
 - ingestion, retrieval, answer generation
 - Supabase schema and retrieval function ✅ (schema applied, verified)
 
 ### Excluded (both tracks)
 
-- frontend
 - auth and RLS enforcement
 - production deployment
 - re-ranking

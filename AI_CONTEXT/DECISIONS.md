@@ -1,6 +1,6 @@
 # Decisions
 
-Last updated: 2026-06-01 Europe/London
+Last updated: 2026-06-04 Europe/London
 
 ## Implementation Paths
 
@@ -55,6 +55,13 @@ The project now has two parallel tracks. This section records the decisions take
 - Status: accepted
 - Rationale: consolidating all plan documents under `plan/` and splitting playground into `app/`, `tests/`, and `data/` creates clearer ownership boundaries and reduces onboarding friction for multi-agent collaboration.
 - Consequence: historical file paths changed to `plan/architecture/rag-system-design.md`, `plan/phase/phase1-mvp-plan.md`, and `playground/app/*` script locations. All references and run commands must use the new paths.
+
+### D-016: Frontend proxy architecture (Next.js Route Handlers → FastAPI)
+
+- Status: accepted
+- Rationale: browser calls are routed through Next.js API Route Handlers (`/api/*`) which proxy to the FastAPI backend server-side. This eliminates CORS configuration entirely since the browser only talks to the Next.js origin.
+- Consequence: the backend URL is only configured server-side via `NEXT_PUBLIC_API_BASE_URL` and is never exposed to client JavaScript. Vercel deployment requires the backend to be publicly reachable from Vercel's serverless function IPs.
+- Tradeoff: adds a network hop and serverless function cold-start latency; for latency-sensitive use, future streaming could bypass the proxy.
 
 ## Active Decisions
 
