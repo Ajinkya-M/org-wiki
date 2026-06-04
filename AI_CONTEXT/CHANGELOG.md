@@ -4,6 +4,31 @@
 
 ### opencode
 
+- Frontend redesign: restyled all three pages (Ask, Ingest, Settings) to match Anthropic Design "Org Wiki" dark prototype.
+- Installed `geist` npm package; replaced Inter with GeistSans/GeistMono fonts.
+- Rewrote `globals.css` with full oklch design token system: purple/teal/red color ramps, dark+light themes, custom component styles (nav, badges, buttons, cards, query-box, loading-bar, answer-card, dropzone, doc-list, settings-form, toast).
+- Updated `tailwind.config.ts` to map Tailwind colors/radius/font to CSS custom properties.
+- Redesigned navbar with stacked-square SVG logo, inline nav icons, active state tabs, org-select dropdown.
+- Redesigned Ask page: question form with textarea + suggest chips + ⌘+↵ submit, animated loading bar with timer, markdown answer card, source list with similarity score bars, query history chips.
+- Redesigned Ingest page: drag-drop zone with diagonal stripe pattern + drag state, per-file doc rows with queue→uploading→indexed pipeline animation, status badges (teal/purple/gray/red), progress bar.
+- Redesigned Settings page: Field layout (label+help+input), Top-K stepper, match-threshold range slider with value display, Test Connection button with real `/api/health` call and conn-status feedback (dot/test/check/error).
+- Clean `npx tsc --noEmit` with zero errors.
+- Verified full-stack: backend FastAPI on :8000 and frontend Next.js on :3000 both start and respond.
+
+## 2026-06-04 (settings fix)
+
+### Claude Code
+
+- Corrected Settings page to match the proxy architecture — API base URL is no longer a user-editable field.
+- Removed `apiBaseUrl` from `Settings` interface in `settings-storage.ts` and dropped the input field from `settings-form.tsx`.
+- Added read-only backend URL display in the Connection card (`page.tsx`), sourced from `NEXT_PUBLIC_API_BASE_URL` env var with `http://localhost:8000` fallback; styled as muted/non-interactive.
+- Rewrote `test-connection-button.tsx`: replaced React Query hook with a direct `fetch("/api/health")` call wrapped in `performance.now()` timing; shows "Backend online · Xms" (green) or "Backend unreachable — <detail>" (red) inline.
+- Updated `frontend/.env.local.example` comment to document dual server+client use of `NEXT_PUBLIC_API_BASE_URL`.
+
+## 2026-06-04 Europe/London
+
+### opencode
+
 - Planned and implemented Next.js 14 frontend per `frontend/FRONTEND_PLAN.md`.
 - Created `frontend/` project with Next.js 14, TypeScript, Tailwind CSS, shadcn/ui primitives, TanStack Query v5.
 - Three pages: `/` (query with markdown answer + cited sources + elapsed timer), `/ingest` (drag-drop PDF upload with per-file status), `/settings` (API URL, defaults, test connection).

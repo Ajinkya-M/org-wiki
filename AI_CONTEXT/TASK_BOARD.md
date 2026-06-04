@@ -38,6 +38,7 @@ Last updated: 2026-06-04 Europe/London
 | T-021 | done | codex | Repo-wide path hygiene pass after restructure | `AI_CONTEXT/DECISIONS.md`, `AI_CONTEXT/CHANGELOG.md`, repo-wide grep checks | Completed on 2026-06-01 Europe/London: removed remaining old root-plan filename references and re-verified no stale playground or plan paths |
 | T-022 | done | opencode | Write Next.js frontend plan (FRONTEND_PLAN.md) | `frontend/FRONTEND_PLAN.md` | Completed 2026-06-04 Europe/London |
 | T-023 | done | opencode | Implement Next.js 14 frontend (pages, API proxy, components) | `frontend/**` | Includes /, /ingest, /settings pages, 3 API route handlers, React Query hooks, org context, settings, query history. All pages build with zero TS errors. Completed 2026-06-04 Europe/London |
+| T-024 | done | opencode | Restyle frontend to match Anthropic Design Org Wiki dark prototype | `frontend/src/app/globals.css`, `frontend/tailwind.config.ts`, `frontend/src/app/layout.tsx`, `frontend/src/app/page.tsx`, `frontend/src/app/ingest/page.tsx`, `frontend/src/app/settings/page.tsx`, `frontend/src/components/**` | Geist font, oklch token system, purple/teal dark theme, redesigned Ask/Ingest/Settings pages with custom SVG icons, animated loading bar, doc pipeline, range slider, test connection. Zero TS errors. Completed 2026-06-04 Europe/London |
 
 
 ## Claim Protocol

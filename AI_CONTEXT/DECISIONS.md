@@ -56,6 +56,24 @@ The project now has two parallel tracks. This section records the decisions take
 - Rationale: consolidating all plan documents under `plan/` and splitting playground into `app/`, `tests/`, and `data/` creates clearer ownership boundaries and reduces onboarding friction for multi-agent collaboration.
 - Consequence: historical file paths changed to `plan/architecture/rag-system-design.md`, `plan/phase/phase1-mvp-plan.md`, and `playground/app/*` script locations. All references and run commands must use the new paths.
 
+### D-017: Frontend redesign — global CSS approach for design-heavy components
+
+- Status: accepted
+- Rationale: the Anthropic Design prototype uses many custom pseudo-elements, gradients, and animations that are cumbersome to express in Tailwind utility classes alone. A global CSS layer (`globals.css`) co-locates all design-specific component styles, while Tailwind is retained for layout scaffolding and responsive breakpoints.
+- Consequence: `globals.css` now contains >500 lines of component styles (nav, badges, buttons, cards, query-box, loading-bar, answer-card, dropzone, doc-list, settings-form, toast). Tailwind config maps to CSS custom properties for consistency.
+
+### D-018: Inline SVGs instead of lucide-react icons
+
+- Status: accepted
+- Rationale: the design prototype uses custom icon shapes (layered stacked-square logo, sparkle for Ask, upload arrow for Ingest, cog for Settings) that don't match lucide-react's icon set. Inline SVGs give pixel-perfect control over stroke width, color, and geometry without importing large icon libraries.
+- Consequence: the three nav icons (sparkle, upload, sliders) are inlined in `navbar.tsx`; lucide-react remains available for any non-nav use but is no longer imported in the navbar.
+
+### D-019: Geist font via npm `geist` package
+
+- Status: accepted
+- Rationale: the design prototype uses Geist Sans/Mono. The `geist` npm package provides optimized Next.js integration (`GeistSans`/`GeistMono` font exports) with automatic local fallback, avoiding a CDN dependency.
+- Consequence: `layout.tsx` uses `GeistSans.variable` and `GeistMono.variable` as CSS variables; Tailwind config maps `font-sans`/`font-mono` to these variables. Inter font is removed.
+
 ### D-016: Frontend proxy architecture (Next.js Route Handlers → FastAPI)
 
 - Status: accepted

@@ -2,9 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useOrg } from "@/lib/org-context";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 
 export function OrgSelector() {
   const { org, setOrg, recentOrgs } = useOrg();
@@ -36,26 +34,40 @@ export function OrgSelector() {
   }
 
   return (
-    <div ref={ref} className="relative">
-      <Button variant="outline" size="sm" onClick={() => setOpen(!open)} className="gap-2">
-        <Badge variant="secondary" className="text-xs px-1.5 py-0">
-          {org}
-        </Badge>
-        <span className="text-xs text-muted-foreground">Org</span>
-      </Button>
+    <div ref={ref} className="relative" style={{ zIndex: 50 }}>
+      <button className="org-select" onClick={() => setOpen(!open)}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+          className="org-icon">
+          <rect x="4" y="4" width="7" height="7" rx="1.2" />
+          <rect x="13" y="4" width="7" height="7" rx="1.2" />
+          <rect x="4" y="13" width="7" height="7" rx="1.2" />
+          <rect x="13" y="13" width="7" height="7" rx="1.2" />
+        </svg>
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: 12.5 }}>{org}</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+        <span className="org-dot" title="Backend online" />
+      </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-56 rounded-md border bg-popover p-2 shadow-md z-50">
-          <p className="text-xs font-medium text-muted-foreground px-1 mb-1">Recent orgs</p>
+        <div className="absolute right-0 top-full mt-1 w-56 rounded-md border bg-popover p-2 shadow-md"
+          style={{ background: "var(--surface)", borderColor: "var(--border)", borderWidth: "1px", borderRadius: "12px" }}>
+          <p className="text-xs font-medium px-1 mb-1" style={{ color: "var(--text-3)" }}>Recent orgs</p>
           {recentOrgs.length === 0 && (
-            <p className="text-xs text-muted-foreground px-1 mb-2">No recent orgs</p>
+            <p className="text-xs px-1 mb-2" style={{ color: "var(--text-3)" }}>No recent orgs</p>
           )}
           <div className="flex flex-col gap-0.5 mb-2">
             {recentOrgs.map((r) => (
               <button
                 key={r}
                 onClick={() => handleSelect(r)}
-                className="text-left px-2 py-1 rounded text-sm hover:bg-accent transition-colors"
+                className="text-left px-2 py-1.5 rounded text-sm transition-colors"
+                style={{ color: "var(--text-2)" }}
+                onMouseOver={(e) => e.currentTarget.style.background = "var(--surface-2)"}
+                onMouseOut={(e) => e.currentTarget.style.background = "transparent"}
               >
                 {r}
               </button>
@@ -68,10 +80,11 @@ export function OrgSelector() {
               value={customOrg}
               onChange={(e) => setCustomOrg(e.target.value)}
               className="h-8 text-xs"
+              style={{ background: "var(--surface-2)", borderColor: "var(--border-2)" }}
             />
-            <Button type="submit" size="sm" className="h-8 text-xs" disabled={!customOrg.trim()}>
+            <button type="submit" className="btn btn-primary btn-sm" disabled={!customOrg.trim()}>
               Set
-            </Button>
+            </button>
           </form>
         </div>
       )}

@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-06-04 Europe/London
+Last updated: 2026-06-04 Europe/London (redesign)
 
 ## Repository Status
 
@@ -56,9 +56,10 @@ The system has a **working local + Supabase-backed playground prototype**. Core 
 - `playground/app/api.py` — FastAPI playground service with `GET /health`, `POST /ingest` (PDF upload -> Supabase indexing), and `POST /query` (pgvector retrieval -> OpenRouter answer + cited sources).
 - Supabase project `org-wiki` provisioned, schema applied, connection confirmed via both Python client and Supabase MCP.
 - `frontend/` — Next.js 14 (App Router) frontend with three pages:
-  - `/` — Query page (textarea input, markdown LLM answer with elapsed timer, collapsible cited sources with similarity%/chunk_id, query history chips)
-  - `/ingest` — Upload page (react-dropzone PDF-only, per-file upload status, org selector, registry placeholder)
-  - `/settings` — Settings form (API URL, default org, top-K, match threshold slider, test connection button)
+  - **Redesigned** to match Anthropic Design "Org Wiki" dark prototype (purple/teal/red oklch token system, Geist font, custom SVG icons, dark mode default)
+  - `/` — Ask page (question textarea with suggest chips + ⌘+↵, animated loading bar with timer, markdown answer card with cited sources showing similarity score bars, query history chips)
+  - `/ingest` — Upload page (drag-drop zone with diagonal stripe pattern + drag state, per-file doc rows simulating queue→uploading→indexed pipeline, status badges with teal/purple/gray/red variants, animated progress bar)
+  - `/settings` — Configuration page (Field-style form layout with label+help+input, Top-K number stepper, match-threshold range slider with live value, Test Connection button calling `/api/health` with inline status feedback)
   - Server-side API proxy (`/api/health`, `/api/ingest`, `/api/query`) — calls FastAPI backend, never exposed to browser
   - React Query v5 hooks, org context (localStorage + env fallback), settings/query history stored client-side
   - Build passes with zero TypeScript errors
@@ -98,9 +99,9 @@ The system has a **working local + Supabase-backed playground prototype**. Core 
 ## Immediate Priorities
 
 1. Keep AI context docs synchronized with active implementation changes.
-2. Add DB-backed retrieval path to `playground/app/ask.py` (currently local JSON retrieval only).
-3. Extract or migrate playground logic into Phase 1 modular backend structure.
-4. Run the fastAPI backend alongside the frontend to verify end-to-end query and ingest workflows through the UI.
+2. Run end-to-end verification: start backend + frontend, open the UI, test the ingest and query flow through the browser.
+3. Add DB-backed retrieval path to `playground/app/ask.py` (currently local JSON retrieval only).
+4. Extract or migrate playground logic into Phase 1 modular backend structure.
 
 ## Development Environment
 
@@ -117,7 +118,7 @@ The system has a **working local + Supabase-backed playground prototype**. Core 
 ## Dependencies (installed)
 
 | Package | Used by | Notes |
-|---|---|---|
+|---|---|---|---|
 | `PyMuPDF` (fitz) | `index_docs.py` | Text extraction — no native deps needed |
 | `sentence-transformers` | Both scripts | Embedding model `all-MiniLM-L6-v2` (384-dim) |
 | `numpy` | `ask.py` | Cosine similarity computation |
@@ -125,6 +126,9 @@ The system has a **working local + Supabase-backed playground prototype**. Core 
 | `supabase` | `test_supabase.py` | Supabase Python client |
 | `python-dotenv` | `test_supabase.py` | Load `.env` from project root |
 | `httpx` | (Phase 1) | Installed, used by OpenRouter calls |
+| `geist` | `frontend/` | Geist Sans/Mono font via npm — replaces Inter |
+| `react-markdown` + `remark-gfm` | `frontend/` | Markdown answer rendering with GFM tables |
+| `sonner` | `frontend/` | Toast notifications (used by Toaster in providers) |
 
 No `poppler-utils`, `unstructured`, or `langchain` needed for the local prototype.
 

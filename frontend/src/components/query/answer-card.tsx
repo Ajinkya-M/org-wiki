@@ -14,18 +14,18 @@ interface AnswerCardProps {
 
 export function AnswerCard({ question, answer, model, org, elapsedSeconds }: AnswerCardProps) {
   return (
-    <div className="space-y-2">
-      <div className="text-sm text-muted-foreground">
-        Answer generated in {elapsedSeconds}s
+    <div>
+      <div className="answer-head">
+        <span className="badge" style={{ background: "var(--badge-purple-bg)", color: "var(--badge-purple-fg)" }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M13 3L5 13h5l-1 8 8-10h-5z" />
+          </svg>
+          Answer
+        </span>
+        <span className="mono-tag">{model}</span>
       </div>
-      <div className="prose prose-sm max-w-none dark:prose-invert">
+      <div className="answer-body">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{answer}</ReactMarkdown>
-      </div>
-      <div className="flex gap-2 pt-2">
-        <Badge variant="secondary">{org}</Badge>
-        <Badge variant="outline" className="text-xs font-mono">
-          {model}
-        </Badge>
       </div>
     </div>
   );
