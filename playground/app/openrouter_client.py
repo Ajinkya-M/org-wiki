@@ -38,7 +38,8 @@ def pick_free_model(api_key: str, preferred_model: str | None = None, timeout: f
     if not free_models:
         raise RuntimeError("No free OpenRouter models available for this key right now.")
 
-    ranked_models = [m for m in free_models if "reasoning" not in m.lower()]
+    _excluded = {"reasoning", "safety", "moderation", "guard", "shield"}
+    ranked_models = [m for m in free_models if not any(kw in m.lower() for kw in _excluded)]
     if not ranked_models:
         ranked_models = free_models
 

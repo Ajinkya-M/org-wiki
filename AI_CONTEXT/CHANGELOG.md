@@ -1,5 +1,18 @@
 # Agent Change Log
 
+## 2026-06-04 Europe/London
+
+### opencode
+
+- Planned and implemented Next.js 14 frontend per `frontend/FRONTEND_PLAN.md`.
+- Created `frontend/` project with Next.js 14, TypeScript, Tailwind CSS, shadcn/ui primitives, TanStack Query v5.
+- Three pages: `/` (query with markdown answer + cited sources + elapsed timer), `/ingest` (drag-drop PDF upload with per-file status), `/settings` (API URL, defaults, test connection).
+- Three API Route Handlers (`/api/health`, `/api/ingest`, `/api/query`) proxying to the FastAPI backend.
+- React Query hooks (`useHealth`, `useQueryRag`, `useIngest`) for server state.
+- Org context with localStorage persistence + env fallback; settings and query history stored client-side.
+- `npm run build` passes with zero TypeScript errors.
+- Updated T-022/T-023 in TASK_BOARD.md; updated PROJECT_STATE.md to include frontend.
+
 ## 2026-06-01 Europe/London
 
 ### codex

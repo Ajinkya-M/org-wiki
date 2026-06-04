@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-06-01 Europe/London
+Last updated: 2026-06-04 Europe/London
 
 ## Repository Status
 
@@ -36,6 +36,7 @@ The system has a **working local + Supabase-backed playground prototype**. Core 
 - Playground smoke tests: `playground/tests/`
 - Playground local artifacts: `playground/data/input/`, `playground/data/embeddings/` (ignored)
 - Database migrations: `migrations/`
+- Frontend: `frontend/` (Next.js 14 App Router, see `frontend/FRONTEND_PLAN.md` for full component inventory)
 
 ### What Exists
 
@@ -54,8 +55,15 @@ The system has a **working local + Supabase-backed playground prototype**. Core 
 - `playground/tests/test_openrouter.py` — checks OpenRouter connectivity and runs a simple free-model completion smoke test.
 - `playground/app/api.py` — FastAPI playground service with `GET /health`, `POST /ingest` (PDF upload -> Supabase indexing), and `POST /query` (pgvector retrieval -> OpenRouter answer + cited sources).
 - Supabase project `org-wiki` provisioned, schema applied, connection confirmed via both Python client and Supabase MCP.
+- `frontend/` — Next.js 14 (App Router) frontend with three pages:
+  - `/` — Query page (textarea input, markdown LLM answer with elapsed timer, collapsible cited sources with similarity%/chunk_id, query history chips)
+  - `/ingest` — Upload page (react-dropzone PDF-only, per-file upload status, org selector, registry placeholder)
+  - `/settings` — Settings form (API URL, default org, top-K, match threshold slider, test connection button)
+  - Server-side API proxy (`/api/health`, `/api/ingest`, `/api/query`) — calls FastAPI backend, never exposed to browser
+  - React Query v5 hooks, org context (localStorage + env fallback), settings/query history stored client-side
+  - Build passes with zero TypeScript errors
 
-### What's Next
+### What's Next (backend)
 
 - Add Supabase retrieval mode to `playground/app/ask.py` so query path can run from DB as well as local JSON.
 - Harden playground API for operational behavior (retry/backoff, richer error envelopes, request validation, and configurable retrieval filters).
@@ -93,6 +101,7 @@ The system has a **working local + Supabase-backed playground prototype**. Core 
 1. Keep AI context docs synchronized with active implementation changes.
 2. Add DB-backed retrieval path to `playground/app/ask.py` (currently local JSON retrieval only).
 3. Extract or migrate playground logic into Phase 1 modular backend structure.
+4. Run the fastAPI backend alongside the frontend to verify end-to-end query and ingest workflows through the UI.
 
 ## Development Environment
 

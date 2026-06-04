@@ -65,26 +65,28 @@ def get_supabase():
     return _supabase
 
 
+SYSTEM_PROMPT = (
+    "You are a concise knowledge assistant. "
+    "Answer the user's question directly and clearly based only on the provided context. "
+    "Do NOT show your reasoning, thought process, or any preamble. "
+    "Output only the final answer in plain, user-friendly prose. "
+    "Use bullet points or short paragraphs where helpful. "
+    "If the context is insufficient, say so in one sentence."
+)
+
+
 def build_prompt(question: str, chunks: list[dict]) -> str:
     context = []
     for chunk in chunks:
         metadata = chunk.get("metadata", {})
         source = metadata.get("source", "unknown")
         chunk_id = metadata.get("chunk_id", "unknown")
-        similarity = float(chunk.get("similarity", 0.0))
         content = chunk.get("content", "")
-        context.append(
-            f"[Source: {source} | chunk_id: {chunk_id} | score: {similarity:.4f}]\n{content}"
-        )
+        context.append(f"[{source} | {chunk_id}]\n{content}")
 
     return (
-        "You are a knowledge assistant for the organisation. "
-        "Answer using only the provided context. "
-        "If the context is insufficient, say you do not have enough information. "
-        "Always cite source and chunk_id.\n\n"
         f"CONTEXT:\n{chr(10).join(context)}\n\n"
-        f"QUESTION: {question}\n\n"
-        "ANSWER:"
+        f"QUESTION: {question}"
     )
 
 
@@ -179,7 +181,10 @@ def query_rag(payload: QueryRequest) -> dict:
     answer = chat_completion(
         api_key=api_key,
         model=selected_model,
-        messages=[{"role": "user", "content": prompt}],
+        messages=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": prompt},
+        ],
         temperature=0.3,
         max_tokens=700,
         timeout=60.0,

@@ -36,6 +36,9 @@ Last updated: 2026-06-01 Europe/London
 | T-019 | done | codex | Redact concrete Supabase project ID from tracked repo docs | `AI_CONTEXT/PROJECT_STATE.md`, repo-wide text search (excluding `.env*`, `playground/data/embeddings/`) | Completed on 2026-06-01 Europe/London: replaced explicit project ID strings with generic wording in tracked docs |
 | T-020 | done | codex | Restructure repository into professional layout with centralized plan docs and playground app/test/data split | `plan/`, `playground/`, `README.md`, `AGENTS.md`, `CLAUDE.md`, `AI_CONTEXT/*` | Completed on 2026-06-01 Europe/London: moved/renamed plan docs to kebab-case under `plan/`, split playground into `app/tests/data`, updated imports/paths/references and context docs |
 | T-021 | done | codex | Repo-wide path hygiene pass after restructure | `AI_CONTEXT/DECISIONS.md`, `AI_CONTEXT/CHANGELOG.md`, repo-wide grep checks | Completed on 2026-06-01 Europe/London: removed remaining old root-plan filename references and re-verified no stale playground or plan paths |
+| T-022 | done | opencode | Write Next.js frontend plan (FRONTEND_PLAN.md) | `frontend/FRONTEND_PLAN.md` | Completed 2026-06-04 Europe/London |
+| T-023 | done | opencode | Implement Next.js 14 frontend (pages, API proxy, components) | `frontend/**` | Includes /, /ingest, /settings pages, 3 API route handlers, React Query hooks, org context, settings, query history. All pages build with zero TS errors. Completed 2026-06-04 Europe/London |
+
 
 ## Claim Protocol
 
